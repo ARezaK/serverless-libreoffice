@@ -31,37 +31,38 @@ This repo contains code used to run the [online demo](https://vladholubiev.com/s
 
 Compiled and ready to use archive can be downloaded under [Releases section](https://github.com/vladgolubev/serverless-libreoffice/releases).
 
-# How To Help
+# How I got it working
 
-## Reduce Cold Start Time
+Go on and create ~/.aws/credentials file and put your credentials in this format
+[default]
+aws_access_key_id = xxxx
+aws_secret_access_key = xxxxx
 
-Currently ƛ unpacks 109 MB .tar.gz to `/tmp` folder which takes ~1-2 seconds on cold start.
+Download terraform and put it in path
 
-Would be nice to create a single compressed executable to save unpack time and increase portability.
-I tried using [Ermine](http://www.magicermine.com/) packager and it works!!
-But unfortunately this is commercial software.
-Similar open-source analogue [Statifier](http://statifier.sourceforge.net/) produces broken binaries.
+Run this in terminal
+export TF_LOG="TRACE" &&
+export TF_LOG_PATH=“Terraform_log.log" && 
+export AWS_ACCESS_KEY_ID=“xxxx” && 
+export AWS_SECRET_ACCESS_KEY=“xxxxx”
 
-Maybe someone has another idea how to create a single executable from a folder full of shared objects.
+CD to folder that has all the .tf in it
 
-**UPD:** TODO: Check out [node-packer](https://github.com/pmq20/node-packer) and [libsquash](https://github.com/pmq20/libsquash) (no FUSE required!)
+$ terraform init
+$ terraform plan # see whats gonna happen
+$ terraform apply # run this whenever u change anything in terraform or if its first time
+$ terraform show # see current state of terraform
+$ terraform destroy # delete infrastructure
 
-## Further Size Reduction
+# sometimes the role isn’t made correctly so u get this error
+Validate Response lambda/CreateFunction failed, not retrying, error InvalidParameterValueException: The provided execution role does not have permissions to call PutTraceSegments on XRAY
 
-I am not a Linux or C++ expert, so for sure I missed some easy "hacks"
-to reduce size of compiled LibreOffice.
+going to IAM management and while the function kept retrying i clicked attach policy and added “AWSXrayFullAccess”
 
-Mostly I just excluded from compilation as much unrelated stuff as possible.
-And stripped symbols from shared objects.
+after u do terraform apply
+go to lambda -> functions -> prod_converttopdf add an s3 trigger that uses the SS bucket and has a  prefix media/attachments/ 
+now when something gets uploaded to attachments folder -> lambda runs -> shows up in pdf bucket
 
-Here is the list of: [available RPM packages](https://gist.github.com/vladgolubev/1dac4ed47a5febf110c668074c6b671c)
-and [libraries](https://gist.github.com/vladgolubev/439559fc7597a4fb51eaa9e97b72f319)
-available in AWS Lambda Environment, which can be helpful.
 
-# Similar Projects
 
-* [Docker in AWS Lambda](https://github.com/vladgolubev/docker-in-aws-lambda)
 
-## License
-
-MIT © [Vlad Holubiev](https://vladholubiev.com)
