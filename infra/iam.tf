@@ -21,9 +21,22 @@ data "aws_iam_policy_document" "convert" {
     ]
 
     resources = [
-      "${aws_s3_bucket.serverless_libreoffice_pdf.arn}/tmp/*",
+      "${aws_s3_bucket.serverless_libreoffice_pdf.arn}/*",
     ]
   }
+
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "s3:*"
+    ]
+
+    resources = [
+      "arn:aws:s3:::*",
+    ]
+  }
+
 
   statement {
     effect = "Allow"

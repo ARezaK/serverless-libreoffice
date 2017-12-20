@@ -12,8 +12,9 @@ const convertCommand = `./instdir/program/soffice --headless --invisible --nodef
 module.exports.convertToPDF = function convertToPDF(inputFilename) {
   console.log(`[convertToPDF][file:${inputFilename}]`);
   const pdfFilename = getPDFFilename(inputFilename);
+  console.log(`[convertToPDF][pdfFileName:${pdfFilename}]`);
 
-  execSync(`cd /tmp && ${convertCommand} ${inputFilename}`);
+  execSync(`cd /tmp && ${convertCommand} ${inputFilename}`.replace('media/attachments/', ''));
   console.log(`[converted]`);
 
   const pdfFileBuffer = readFileSync(`/tmp/${pdfFilename}`);

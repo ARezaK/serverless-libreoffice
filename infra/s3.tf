@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "serverless_libreoffice_pdf" {
-  bucket = "serverless-libreoffice-pdf"
+  bucket = "serverless-libreoffice-pdff"
   acl    = "public-read"
 
   lifecycle_rule {
@@ -36,7 +36,7 @@ data "aws_iam_policy_document" "allow_public_read" {
     ]
 
     resources = [
-      "${aws_s3_bucket.serverless_libreoffice_pdf.arn}/tmp/*",
+      "${aws_s3_bucket.serverless_libreoffice_pdf.arn}/*",
     ]
   }
 }

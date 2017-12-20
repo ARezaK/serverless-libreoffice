@@ -16,11 +16,13 @@ const s3 = new AWS.S3({region: 'us-east-2'});
  * @return {Promise.<String>} URL of uploaded pdf on S3
  */
 function uploadPDF(filename, fileBuffer) {
+  console.log(`[bucket:${process.env.S3_BUCKET_NAME}]`);
+  console.log(`[key:${filename}]`);
   const options = {
     Bucket: process.env.S3_BUCKET_NAME,
     Key: filename,
     Body: fileBuffer,
-    ACL: 'private',
+    ACL: 'public-read',
     ContentType: 'application/pdf'
   };
 
@@ -32,12 +34,6 @@ function uploadPDF(filename, fileBuffer) {
       console.log(`[removed]`);
 
       return Location;
-    })
-    .catch(error => {
-      execSync(`rm /tmp/${filename}`);
-      console.log(`[removed]`);
-
-      throw error;
     });
 }
 

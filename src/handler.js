@@ -55,6 +55,7 @@ module.exports.handler = (event, context, cb) => {
 
     console.log('buffer filename', buffer, filename);
 
+
     return convertFileToPDF(buffer, filename)
     .then(pdfFileURL => {
       return cb(null, {body: JSON.stringify({pdfFileURL})});
